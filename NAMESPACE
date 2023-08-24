@@ -1,0 +1,8 @@
+exportPattern("^[[:alpha:]]+")
+importFrom("graphics", "abline", "lines", "text")
+importFrom("MASS", "polr")
+importFrom("nlme", "gls", "lme", "corAR1")
+importFrom("stats", "binomial", "chisq.test", "fisher.test",
+            "gaussian", "glm", "lm", "logLik", "model.frame",
+            "model.matrix", "model.response", "na.fail", "optimize",
+            "pchisq", "summary.glm")
