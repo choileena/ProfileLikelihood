@@ -9,6 +9,7 @@ Authors@R:
              comment = c(ORCID = "0000-0002-2544-7090")))
 Description: Provides profile likelihoods for a parameter of interest in commonly used statistical models. The models include linear models, generalized linear models, proportional odds models, linear mixed-effects models, and linear models for longitudinal responses fitted by generalized least squares. The package also provides plots for normalized profile likelihoods as well as the maximum profile likelihood estimates and the kth likelihood support intervals.
 License: GPL (>= 3)
+BugReports: https://github.com/choileena/ProfileLikelihood/issues
 Imports: nlme, MASS
 LazyLoad: yes
 NeedsCompilation: no
