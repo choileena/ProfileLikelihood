@@ -1,4 +1,6 @@
 exportPattern("^[[:alpha:]]+")
+S3method(summary, profilelike)
+S3method(plot, profilelike)
 importFrom("graphics", "abline", "lines", "text")
 importFrom("MASS", "polr")
 importFrom("nlme", "gls", "lme", "corAR1")

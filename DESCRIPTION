@@ -1,6 +1,6 @@
 Package: ProfileLikelihood
-Version: 1.3
-Date: 2023-08-24
+Version: 1.4
+Date: 2024-02-09
 Title: Profile Likelihood for a Parameter in Commonly Used Statistical Models
 Maintainer: Leena Choi <naturechoi@gmail.com>
 Authors@R:

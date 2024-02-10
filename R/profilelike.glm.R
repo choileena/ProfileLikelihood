@@ -1,54 +1,43 @@
 profilelike.glm <-
 function(formula, data, profile.theta, family=stats::gaussian, offset.glm=NULL, lo.theta=NULL, hi.theta=NULL, length=300, round=2, subset=NULL, weights=NULL, offset=NULL, ...){
-	if(!is.null(subset)){
-		stop("Warning message: 'subset' should not be provided")
-	}
-	if(!is.null(weights)){
-		stop("Warning message: 'weights' should not be provided")
-	}
-	if(!is.null(offset)){
-		stop("Warning message: do not use 'offset'; use 'offset.glm' instead of 'offset' ")
-	}
-m <- stats::model.frame(formula, data)
-X <- stats::model.matrix(formula, m)
-y <- stats::model.response(m)
-theta.off <- data[,names(data)==profile.theta]
-	if(!is.numeric(theta.off)){
-		stop("Warning message: 'profile.theta' must be a numeric variable")
-	}
-	if( ( length(theta.off)!= length(y) | length(theta.off)!= length(X[,1]) | length(y)!= length(X[,1]) ) ){
-		cat("Warning message: remove missing data \n")
-		}
-		if( ( is.null(lo.theta) | is.null(hi.theta) )){
-			cat("Warning message: provide lo.theta and hi.theta \n")
-			fit <- stats::glm(y ~ -1 + X + theta.off, family=family, na.action=na.fail)
-			mle <- summary(fit)$coefficient["theta.off",1]
-			se <- summary(fit)$coefficient["theta.off",2]
-			lo.theta <- round(mle - 4*se, round)
-			hi.theta <- round(mle + 4*se, round)
-			}
+    if(!is.null(subset)){
+        stop("Warning message: 'subset' should not be provided")
+    }
+    if(!is.null(weights)){
+        stop("Warning message: 'weights' should not be provided")
+    }
+    if(!is.null(offset)){
+        stop("Warning message: do not use 'offset'; use 'offset.glm' instead of 'offset' ")
+    }
+    theta.off <- data[,profile.theta]
+    Xy <- check_formula(formula, data, theta.off)
+    X <- Xy$x # model.matrix(formula, mf)
+    y <- Xy$y # model.response(mf)
 
-theta <- seq(from =lo.theta, to=hi.theta, length=length)
-log.lik <- rep(NA, length)
+    if( is.null(lo.theta) | is.null(hi.theta) ){
+        cat("Warning message: provide lo.theta and hi.theta \n")
+        fit <- stats::glm(y ~ -1 + X + theta.off, family=family, na.action=stats::na.fail)
+        hl <- hilo_theta(fit, round)
+        lo.theta <- hl[1]
+        hi.theta <- hl[2]
+    }
 
-for(i in 1:length){
-pi <- theta[i]
-fit <- stats::glm(y ~ -1 + X + offset(pi*theta.off), family=family, na.action=na.fail)
-if(!is.null(offset.glm)){
-glm.off <- data[,names(data)==offset.glm]
-fit <- stats::glm(y ~ -1 + X + offset(pi*theta.off) + offset(glm.off), family=family, na.action=stats::na.fail)
+    theta <- seq(from =lo.theta, to=hi.theta, length=length)
+    log.lik <- rep(NA, length)
+
+    useOffset <- !is.null(offset.glm)
+    if(useOffset) {
+        glm.off <- data[,offset.glm]
+    }
+    for(i in seq(length)){
+        pi <- theta[i]
+        if(useOffset){
+            fit <- stats::glm(y ~ -1 + X + offset(pi*theta.off) + offset(glm.off), family=family, na.action=stats::na.fail)
+        } else {
+            fit <- stats::glm(y ~ -1 + X + offset(pi*theta.off), family=family, na.action=stats::na.fail)
+        }
+        log.lik[i] <- stats::logLik(fit)
+    }
+
+    profilelike_fun(theta, log.lik)
 }
-log.lik[i] <- stats::logLik(fit)
-}
-
-theta <- theta[is.na(log.lik)!=1]
-log.lik <- log.lik[is.na(log.lik)!=1]
-profile.lik <- exp(log.lik)
-
-mm <- max(log.lik, na.rm=TRUE)
-log.norm.lik <- log.lik - mm
-profile.lik.norm <- exp(log.norm.lik)
-
-return(list(theta=theta, profile.lik=profile.lik, profile.lik.norm=profile.lik.norm))
-}
-
