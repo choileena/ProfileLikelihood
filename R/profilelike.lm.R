@@ -1,5 +1,5 @@
 profilelike.lm <-
-function(formula, data, profile.theta, lo.theta=NULL, hi.theta=NULL, length=300, round=2, subset=NULL, weights=NULL, offset=NULL, ...){
+function(formula, data, profile.theta, lo.theta=NULL, hi.theta=NULL, length=300, round=2, subset=NULL, weights=NULL, offset=NULL, na.action = stats::na.exclude, ...){
     if(!is.null(subset)){
         stop("Warning message: 'subset' should not be provided")
     }
@@ -16,7 +16,7 @@ function(formula, data, profile.theta, lo.theta=NULL, hi.theta=NULL, length=300,
 
     if( is.null(lo.theta) | is.null(hi.theta) ){
         cat("Warning message: provide lo.theta and hi.theta \n")
-        fit <- stats::lm(y ~ -1 + X + theta.off, na.action=stats::na.fail)
+        fit <- stats::lm(y ~ -1 + X + theta.off, na.action = na.action)
         hl <- hilo_theta(fit, round)
         lo.theta <- hl[1]
         hi.theta <- hl[2]
@@ -28,7 +28,7 @@ function(formula, data, profile.theta, lo.theta=NULL, hi.theta=NULL, length=300,
     for(i in seq(length)){
         pi <- theta[i]
         y.off <- y - pi*theta.off
-        fit <- stats::lm(y.off ~ -1 + X, na.action=stats::na.fail)
+        fit <- stats::lm(y.off ~ -1 + X, na.action = na.action)
         log.lik[i] <- stats::logLik(fit)
     }
 

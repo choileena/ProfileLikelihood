@@ -1,5 +1,5 @@
 profilelike.gls <-
-function(formula, data, correlation=NULL, subject, profile.theta, method="ML", lo.theta = NULL, hi.theta = NULL, length=300, round=2, subset=NULL, weights=NULL, ...){
+function(formula, data, correlation=NULL, subject, profile.theta, method="ML", lo.theta = NULL, hi.theta = NULL, length=300, round=2, subset=NULL, weights=NULL, na.action = stats::na.exclude, ...){
     if(!is.null(subset)){
         stop("Warning message: 'subset' should not be provided")
     }
@@ -15,7 +15,7 @@ function(formula, data, correlation=NULL, subject, profile.theta, method="ML", l
 
     if( is.null(lo.theta) | is.null(hi.theta) ){
         cat("Warning message: provide lo.theta and hi.theta \n")
-        fit <- stats::lm(y ~ -1 + X + theta.off, na.action=stats::na.fail)
+        fit <- stats::lm(y ~ -1 + X + theta.off, na.action = na.action)
         hl <- hilo_theta(fit, round)
         lo.theta <- hl[1]
         hi.theta <- hl[2]
@@ -27,7 +27,7 @@ function(formula, data, correlation=NULL, subject, profile.theta, method="ML", l
     for(i in seq(length)){
         pi <- theta[i]
         y.off <- y - pi*theta.off
-        fit <- nlme::gls(y.off ~ -1 + X, correlation = correlation, method="ML", na.action=stats::na.fail)
+        fit <- nlme::gls(y.off ~ -1 + X, correlation = correlation, method="ML", na.action = na.action)
         log.lik[i] <- stats::logLik(fit)
     }
 

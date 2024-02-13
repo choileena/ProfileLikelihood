@@ -1,5 +1,5 @@
 profilelike.polr <-
-function(formula, data, profile.theta, method="logistic", lo.theta=NULL, hi.theta=NULL, length=300, round=2, subset=NULL, weights=NULL, offset=NULL, ...){
+function(formula, data, profile.theta, method="logistic", lo.theta=NULL, hi.theta=NULL, length=300, round=2, subset=NULL, weights=NULL, offset=NULL, na.action = stats::na.exclude, ...){
     if(!is.null(subset)){
         stop("Warning message: 'subset' should not be provided")
     }
@@ -25,9 +25,9 @@ function(formula, data, profile.theta, method="logistic", lo.theta=NULL, hi.thet
     for(i in seq(length)){
         pi <- theta[i]
         if(oneColumn) {
-            fit <- MASS::polr(y ~ X + offset(pi*theta.off), method=method, na.action=stats::na.fail)
+            fit <- MASS::polr(y ~ X + offset(pi*theta.off), method=method, na.action = na.action)
         } else {
-            fit <- MASS::polr(y ~ X[,-1] + offset(pi*theta.off), method=method, na.action=stats::na.fail)
+            fit <- MASS::polr(y ~ X[,-1] + offset(pi*theta.off), method=method, na.action = na.action)
         }
         log.lik[i] <- stats::logLik(fit)
     }
