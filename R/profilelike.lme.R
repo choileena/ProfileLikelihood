@@ -3,9 +3,6 @@ function(formula, data, subject, random, correlation=NULL, profile.theta, method
     if(!is.null(subset)){
         stop("Warning message: 'subset' should not be provided")
     }
-    if(!is.null(weights)){
-        stop("Warning message: 'weights' should not be provided")
-    }
     theta.off <- data[,profile.theta]
     Xy <- check_formula(formula, data, theta.off)
     X <- Xy$x # model.matrix(formula, mf)
@@ -27,7 +24,9 @@ function(formula, data, subject, random, correlation=NULL, profile.theta, method
     for(i in seq(length)){
         pi <- theta[i]
         y.off <- y - pi*theta.off
-        fit <- nlme::lme(y.off ~ -1 + X, random = random, correlation=correlation, method="ML", na.action=stats::na.fail)
+        fit <- nlme::lme(y.off ~ -1 + X, random = random, correlation = correlation, weights = weights,
+            method = "ML", na.action = stats::na.fail
+        )
         log.lik[i] <- stats::logLik(fit)
     }
 
