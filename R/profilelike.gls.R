@@ -27,7 +27,7 @@ function(formula, data, correlation=NULL, subject, profile.theta, method="ML", l
     for(i in seq(length)){
         pi <- theta[i]
         y.off <- y - pi*theta.off
-        fit <- nlme::gls(y.off ~ -1 + X, correlation = correlation, method="ML", na.action = na.action)
+        fit <- nlme::gls(y.off ~ -1 + X, correlation = correlation, method = method, na.action = na.action)
         log.lik[i] <- stats::logLik(fit)
     }
 

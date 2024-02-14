@@ -25,7 +25,7 @@ function(formula, data, subject, random, correlation=NULL, profile.theta, method
         pi <- theta[i]
         y.off <- y - pi*theta.off
         fit <- nlme::lme(y.off ~ -1 + X, random = random, correlation = correlation, weights = weights,
-            method = "ML", na.action = na.action
+            method = method, na.action = na.action
         )
         log.lik[i] <- stats::logLik(fit)
     }
