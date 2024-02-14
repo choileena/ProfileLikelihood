@@ -21,10 +21,14 @@ function(formula, data, subject, random, correlation=NULL, profile.theta, method
     theta <- seq(from =lo.theta, to=hi.theta, length=length)
     log.lik <- rep(NA, length)
 
+    e <- list2env(data)
+    e[['X']] <- X
     for(i in seq(length)){
         pi <- theta[i]
         y.off <- y - pi*theta.off
-        fit <- nlme::lme(y.off ~ -1 + X, random = random, correlation = correlation, weights = weights,
+        e[['y.off']] <- y.off
+        fit <- nlme::lme(y.off ~ -1 + X, data = e,
+            random = random, correlation = correlation, weights = weights,
             method = method, na.action = na.action
         )
         log.lik[i] <- stats::logLik(fit)
