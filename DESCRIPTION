@@ -12,3 +12,4 @@ License: GPL (>= 3)
 Imports: nlme, MASS
 LazyLoad: yes
 NeedsCompilation: no
+Depends: R (>= 3.5.0)

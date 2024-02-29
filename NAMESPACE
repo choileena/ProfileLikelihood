@@ -1,10 +1,12 @@
 exportPattern("^[[:alpha:]]+")
 S3method(summary, profilelike)
 S3method(plot, profilelike)
-importFrom("graphics", "abline", "lines", "text")
+S3method(LI, profilelike)
+importFrom("graphics", "abline", "lines", "par", "text")
 importFrom("MASS", "polr")
-importFrom("nlme", "gls", "lme", "corAR1")
-importFrom("stats", "binomial", "chisq.test", "fisher.test",
+importFrom("nlme", "gls", "lme", "corAR1", "varIdent")
+importFrom("stats", "binomial", "chisq.test", "coef", "fisher.test",
             "gaussian", "glm", "lm", "logLik", "model.frame",
             "model.matrix", "model.response", "na.fail", "optimize",
             "pchisq", "summary.glm")
+importFrom("utils", "modifyList")

@@ -1,5 +1,6 @@
 \name{profilelike.summary}
 \alias{profilelike.summary}
+\alias{summary.profilelike}
 \title{
 Summary for the Maximum Profile Likelihood Estimate and Likelihood Support Intervals
 }
@@ -7,10 +8,17 @@ Summary for the Maximum Profile Likelihood Estimate and Likelihood Support Inter
 The function provides the maximum profile likelihood estimate and likelihood support intervals  (Royall, 1997).
 }
 \usage{
-profilelike.summary(k, theta = theta, profile.lik.norm = profile.lik.norm, 
-		round = 2)
+\method{summary}{profilelike}(object, ...)
+
+profilelike.summary(k, theta, profile.lik.norm, round = 2)
 }
 \arguments{
+  \item{object}{
+\sQuote{profilelike} object
+}
+  \item{\dots}{
+additional arguments, typically \sQuote{k} and \sQuote{round}.
+}
   \item{k}{
 strength of evidence for the \code{k}th likelihood support interval.
 }
@@ -54,6 +62,6 @@ weight <- c(ctl, trt)
 dd <- data.frame(group=group, weight=weight)
 xx <- profilelike.lm(formula = weight ~ 1, data=dd, profile.theta="group",
 				lo.theta=-2, hi.theta=1, length=500)
-profilelike.plot(theta=xx$theta, profile.lik.norm=xx$profile.lik.norm, round=2)
-profilelike.summary(k=8, theta=xx$theta, profile.lik.norm=xx$profile.lik.norm, round=3)
+plot(xx)
+summary(xx, k=8, round=3)
 }

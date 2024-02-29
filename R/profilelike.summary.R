@@ -11,6 +11,15 @@ profilelike.summary <- function(k, theta, profile.lik.norm, round=2){
     list(k = k, mle = mle, LI.k = LI.k,  LI.norm = LI.norm)
 }
 
-summary.profilelike <- function(obj, k, round = 2) {
-    profilelike.summary(k, obj$theta, obj$profile.lik.norm, round)
+summary.profilelike <- function(object, ...) {
+    xargs <- list(...)
+    k <- xargs$k
+    rnd <- xargs$round
+    if(is.null(k)) {
+        stop('argument "k" must be provided')
+    }
+    if(is.null(rnd)) {
+        rnd <- 2
+    }
+    profilelike.summary(k, object$theta, object$profile.lik.norm, rnd)
 }

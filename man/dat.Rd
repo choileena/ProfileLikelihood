@@ -1,0 +1,29 @@
+\name{dat}
+\alias{dat}
+\docType{data}
+\title{
+ADD
+}
+\description{
+ADD
+}
+\usage{data(dat)}
+\format{
+  A data frame with 96 observations on the following 7 variables.
+  \describe{
+    \item{\code{id}}{ADD}
+    \item{\code{period}}{ADD}
+    \item{\code{seq}}{ADD}
+    \item{\code{treat}}{ADD}
+    \item{\code{auc}}{ADD}
+    \item{\code{cmax}}{ADD}
+    \item{\code{tmax}}{ADD}
+  }
+}
+\details{
+ADD
+}
+\examples{
+data(dat)
+}
+\keyword{datasets}

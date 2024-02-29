@@ -1,22 +1,35 @@
 \name{profilelike.plot}
 \alias{profilelike.plot}
+\alias{plot.profilelike}
 \title{
 Profile Likelihood Plot
 }
 \description{
 The function provides a plot for a normalized profile likelihood as well as the maximum profile likelihood estimate and the \code{k}th likelihood support intervals (Royall, 1997).}
 \usage{
-profilelike.plot(theta = theta, profile.lik.norm = profile.lik.norm, round = 2)
+\method{plot}{profilelike}(x, ...)
+
+profilelike.plot(theta, profile.lik.norm, ...)
 }
 \arguments{
+  \item{x}{
+\sQuote{profilelike} object
+}
+  \item{\dots}{
+additional arguments, either arguments to \code{plot.default} or:
+    \itemize{
+        \item{k}{strength of evidence for the \code{k}th likelihood support interval. Defaults to 1/8 and 1/32. Set to FALSE to ignore.}
+        \item{round}{the number of decimal places for \code{\link{round}} function for presentation of the maximum profile likelihood estimate and the \code{k}th likelihood support intervals.}
+        \item{showText}{if FALSE, text is not displayed on plot}
+        \item{textx}{\sQuote{x} position for text; this is scaled to 0:1}
+        \item{texty}{starting \sQuote{y} position for text; defaults to 0.9}
+    }
+}
   \item{theta}{
 numerical grid values for a parameter of interest in a specified range.
 }
   \item{profile.lik.norm}{
 numerical values for a normalized profile likelihood ranging from 0 to 1.
-}
-  \item{round}{
-the number of decimal places for \code{\link{round}} function for presentation of the maximum profile likelihood estimate and the \code{k}th likelihood support intervals.
 }
 }
 \details{
@@ -47,6 +60,6 @@ weight <- c(ctl, trt)
 dd <- data.frame(group=group, weight=weight)
 xx <- profilelike.lm(formula = weight ~ 1, data=dd, profile.theta="group",
 			lo.theta=-2, hi.theta=1, length=500)
-profilelike.plot(theta=xx$theta, profile.lik.norm=xx$profile.lik.norm, round=2)
-profilelike.summary(k=8, theta=xx$theta, profile.lik.norm=xx$profile.lik.norm, round=3)
+plot(xx)
+summary(xx, k=8, round=3)
 }

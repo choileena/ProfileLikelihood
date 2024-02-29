@@ -8,8 +8,8 @@ This function provides values for a profile likelihood and a normalized profile 
 }
 \usage{
 profilelike.lme(formula, data, subject, random, correlation = NULL, 
-	profile.theta, method = "ML", lo.theta, hi.theta, length = 300, 
-	round = 2, subset = NULL, weights = NULL, ...)
+	profile.theta, method = "ML", lo.theta = NULL, hi.theta = NULL, length = 300,
+	round = 2, subset = NULL, weights = NULL, na.action = stats::na.exclude, ...)
 }
 \arguments{
   \item{formula}{
@@ -51,6 +51,7 @@ should not be provided.
   \item{weights}{
 should not be provided.
 }
+  \item{na.action}{defaults to \link[stats]{na.exclude}}
   \item{\dots}{
 further arguments passed to or from other methods.
 }
@@ -59,6 +60,7 @@ further arguments passed to or from other methods.
 This function provides values for a profile likelihood and a normalized profile likelihood for a parameter of interest in a linear mixed-effects model. Users must define a parameter of interest in a linear mixed-effects model. This function can be used for models comparable with the \code{\link[nlme:lme]{lme}} function. However, arguments weights and subset should not be provided. A normalized profile likelihood is obtained by a profile likelihood being divided by the maximum value of the profile likelihood so that a normalized profile likelihood ranges from 0 to 1.
 }
 \value{
+A \sQuote{profilelike} object, with elements:
 \item{theta }{numerical grid values for a parameter of interest in a specified range (between lower and upper bounds).}
 \item{profile.lik }{numerical values for a profile likelihood corresponding to theta in a specified range (between lower and upper bounds).}
 \item{profile.lik.norm }{numerical values for a normalized profile likelihood ranging from 0 to 1.}
@@ -82,6 +84,6 @@ Leena Choi <naturechoi@gmail.com>
 xx <- profilelike.lme(formula = yield ~ endpoint, random = ~ 1 | id, 
 		correlation=corAR1(form = ~ 1 | id), data=Gasoline, subject="Sample", 
 		profile.theta="vapor", method="ML", lo.theta=1, hi.theta=5, length=500, round=2)
-profilelike.plot(theta=xx$theta, profile.lik.norm=xx$profile.lik.norm, round=4)
+plot(xx, round=4)
 }
 }

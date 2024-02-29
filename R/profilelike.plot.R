@@ -1,38 +1,57 @@
-profilelike.plot <- function(theta, profile.lik.norm, round=2){
-    mle <- round(max(theta[profile.lik.norm==max(profile.lik.norm)]),round)
-    theta1.x.p <- theta[profile.lik.norm >=(1/8)]
-    theta2.x.p <- theta[profile.lik.norm >=(1/20)]
-    theta3.x.p <- theta[profile.lik.norm >=(1/32)]
-    theta.x.p.norm <- theta[profile.lik.norm >=0.146] #6.849
-    li.x.p.norm <- rep(0.146, length(theta.x.p.norm))
-    li8.x.p <- rep(1/8, length(theta1.x.p))
-    li20.x.p <- rep(1/20, length(theta2.x.p))
-    li32.x.p <- rep(1/32, length(theta3.x.p))
-
-    plot(theta, profile.lik.norm, type="l", lty=1, lwd=1, ylim=c(0,1), xlim=c(min(theta), max(theta)), ylab="", xlab=expression(theta))
-    graphics::lines(theta.x.p.norm, li.x.p.norm, lty=1, lwd=1, col="violet")
-    graphics::lines(theta1.x.p, li8.x.p, lty=1, lwd=1, col=4)
-    graphics::lines(theta2.x.p, li20.x.p, lty=1, lwd=1, col=2)
-    graphics::lines(theta3.x.p, li32.x.p, lty=1, lwd=1, col=3)
-    graphics::abline(v=0, lty=2, lwd=1.2, col="gray")
-    if(mle > 0){
-        pos=0.15
-    } else{
-        pos=0.8
-    }
-    spot <- theta[pos*length(theta)]
-    range1 <- round(range(theta1.x.p), round)
-    range2 <- round(range(theta2.x.p), round)
-    range3 <- round(range(theta3.x.p), round)
-    range4 <- round(range(theta.x.p.norm), round)
-
-    graphics::text(spot, 1, paste("Max at  ", mle), cex=0.9, col=1)
-    graphics::text(spot, 0.95, paste("1/6.8 LI (", range4[1], ",", range4[2], ")" ), cex=0.9, col="violet")
-    graphics::text(spot, 0.90, paste("1/8 LI (", range1[1], ",", range1[2], ")" ), cex=0.9, col=4)
-    graphics::text(spot, 0.85, paste("1/20 LI (", range2[1], ",", range2[2], ")" ), cex=0.9, col=2)
-    graphics::text(spot, 0.80, paste("1/32 LI (", range3[1], ",", range3[2], ")" ), cex=0.9, col=3)
+profilelike.plot <- function(theta, profile.lik.norm, ...) {
+    # make "profilelike" object
+    l <- list(theta = theta, profile.lik.norm = profile.lik.norm)
+    class(l) <- c('profilelike', 'list')
+    plot.profilelike(l, ...)
 }
 
-plot.profilelike <- function(obj, round = 2) {
-    profilelike.plot(obj$theta, obj$profile.lik.norm, round)
+plot.profilelike <- function(x, ...) {
+    xargs <- list(...)
+    k <- xargs$k
+    rnd <- xargs$round
+    showText <- xargs$showText
+    pos <- xargs$textx
+    texty <- xargs$texty
+    if(is.null(k)) {
+        k <- c(8, 32)
+    } else if(isFALSE(k)) {
+        k <- numeric(0)
+        showText <- FALSE
+    }
+    if(is.null(rnd)) rnd <- 2
+    if(is.null(showText)) showText <- TRUE
+    if(is.null(texty)) texty <- 0.9
+    # set and preserve `par`
+    op <- par(las = 1)
+    on.exit(par(op))
+
+    theta <- x$theta
+    profile.lik.norm <- x$profile.lik.norm
+    mle <- round(max(theta[(max(profile.lik.norm) - profile.lik.norm) < 1e-10]), rnd)
+    if(is.null(pos)) {
+        if(mle > 0){
+            pos <- 0.15
+        } else{
+            pos <- 0.8
+        }
+    }
+    spot <- theta[pos*length(theta)]
+
+    plotArgs <- list(x=theta, y=profile.lik.norm, type="l", lty=1, lwd=1, ylim=c(0,1), xlim=range(theta), ylab="", xlab=expression(theta))
+    moreArgs <- xargs[setdiff(names(xargs), c('k','round','showText','textx','texty'))]
+    plotArgs <- modifyList(plotArgs, moreArgs)
+    do.call(plot, plotArgs)
+    if(showText) graphics::text(spot, texty, paste("Max at  ", mle), cex = 0.9, col = 1)
+
+    col_vec <- c('violet', 4, 2, 3)
+    y_spot <- seq(texty - 0.06, by = -0.06, length.out = length(k))
+    for(i in seq_along(k)) {
+        k_i <- 1 / k[i]
+        t.xp <- theta[profile.lik.norm >= k_i]
+        li.xp <- rep(k_i, length(t.xp))
+        rng <- round(range(t.xp, na.rm = TRUE), rnd)
+        graphics::lines(t.xp, li.xp, lty = plotArgs$lty, lwd = plotArgs$lwd, col = col_vec[i])
+        lab_i <- sprintf("1/%s LI (%s, %s)", k[i], rng[1], rng[2])
+        if(showText) graphics::text(spot, y_spot[i], lab_i, cex = 0.9, col = col_vec[i])
+    }
 }

@@ -9,8 +9,8 @@ Profile Likelihood for a Parameter in Commonly Used Statistical Models
 This package provides profile likelihoods for a parameter of interest in commonly used statistical models. The models include linear models, generalized linear models, proportional odds models, linear mixed-effects models, and linear models for longitudinal responses fitted by generalized least squares. The package also provides plots for normalized profile likelihoods as well as the maximum profile likelihood estimates and the \code{k}th likelihood support intervals (Royall, 1997).
 }
 \details{
-Use \code{ \link{profilelike.lm}}, \code{ \link{profilelike.glm}}, \code{ \link{profilelike.polr}}, \code{ \link{profilelike.gls}} and \code{ \link{profilelike.lme}} to obtain profile likelihoods and normalized profile likelihoods, and plot the normalized profile likelihoods using \code{\link{profilelike.plot}}.
-Use \code{\link{profilelike.summary}} to obtain the maximum profile likelihood estimate and the \code{k}th likelihood support intervals.
+Use \code{ \link{profilelike.lm}}, \code{ \link{profilelike.glm}}, \code{ \link{profilelike.polr}}, \code{ \link{profilelike.gls}} and \code{ \link{profilelike.lme}} to obtain profile likelihoods and normalized profile likelihoods, and plot the normalized profile likelihoods using \code{\link{plot.profilelike}}.
+Use \code{\link{summary.profilelike}} to obtain the maximum profile likelihood estimate and the \code{k}th likelihood support intervals.
 }
 
 \author{
@@ -42,5 +42,5 @@ weight <- c(ctl, trt)
 dd <- data.frame(group=group, weight=weight)
 xx <- profilelike.lm(formula = weight ~ 1, data=dd, profile.theta="group",
 				lo.theta=-2, hi.theta=1, length=500)
-profilelike.plot(theta=xx$theta, profile.lik.norm=xx$profile.lik.norm, round=2)
+plot(xx, round=2)
 }
